@@ -6,10 +6,10 @@ import './App.css';
 import AuthService from './services/auth.service';
 import IUser from './types/user.type';
 
-import Login from './components/login.component';
-import Register from './components/register.component';
-import Home from './components/home.component';
-import Profile from './components/profile.component';
+import Login from './pages/login';
+import Register from './pages/register';
+import Home from './pages/home';
+import Profile from './pages/profile';
 
 import EventBus from './common/EventBus';
 
