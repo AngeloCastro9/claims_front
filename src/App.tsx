@@ -65,7 +65,7 @@ class App extends Component<Props, State> {
       <div>
         <nav className='navbar navbar-expand navbar-dark bg-dark'>
           <Link to={'/'} className='navbar-brand'>
-            Grudinho
+            Central de reclamações
           </Link>
           <div className='navbar-nav mr-auto'>
             <li className='nav-item'>
