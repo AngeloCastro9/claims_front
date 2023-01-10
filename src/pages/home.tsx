@@ -1,62 +1,75 @@
-import React, {Component, useEffect} from 'react';
 import ClaimService from '../services/claims.service';
+import React, {Component} from 'react';
 
 type Props = {};
 
 type State = {
-  content: string;
+  claims: {
+    id: number;
+    name: string;
+    observation: string;
+    price: number;
+    status: string;
+  }[];
+  ready: boolean;
 };
 
-type Claims = {
-  id: number;
-  name: string;
-  observation: string;
-  price: number;
-  status: string;
-};
+export default class Home extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {claims: [], ready: false};
+  }
 
-//get all claims from claimService
-export default function Home() {
-  const [content, setContent] = React.useState([] as Claims[]);
+  async componentDidMount() {
+    await ClaimService.getClaims('1000', '0')
+      .then((response) => {
+        this.setState({claims: response.data, ready: true});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
-  useEffect(() => {
-    ClaimService.getClaims('1000', '0').then(
-      (response) => {
-        setContent(response.data);
-      },
-      (error) => {
-        const _content =
-          (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
-
-        setContent(_content);
-      },
-    );
-  }, []);
-
-  return (
-    <div className='container'>
-      <header className='jumbotron'>
-        <table className='table'>
-          <thead>
-            <tr>
-              <th scope='col'>Nome</th>
-              <th scope='col'>Observações</th>
-              <th scope='col'>Preço</th>
-              <th scope='col'>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {content.map((item) => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.observation}</td>
-                <td>{item.price}</td>
-                <td>{item.status}</td>
+  render() {
+    {
+      console.log('teste', this.state);
+    }
+    return (
+      <div className='container'>
+        {this.state.ready ? (
+          <header className='jumbotron'>
+            {this.state.claims.length > 0 ? (
+              <table className='table'>
+                <thead>
+                  <tr>
+                    <th scope='col'>Nome</th>
+                    <th scope='col'>Observações</th>
+                    <th scope='col'>Preço</th>
+                    <th scope='col'>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.claims.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.name}</td>
+                      <td>{item.observation}</td>
+                      <td>{item.price}</td>
+                      <td>{item.status}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <tr>
+                <td colSpan={4}>Nenhuma reclamação encontrada</td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </header>
-    </div>
-  );
+            )}
+            <button type='button' className='btn btn-primary'>
+              Nova reclamação
+            </button>
+          </header>
+        ) : null}
+      </div>
+    );
+  }
 }
